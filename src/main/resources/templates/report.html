@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Employee Management</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="/bootstrap.min.css" media="screen"/>
+</head>
+<body>
+<div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-7 col-sm-6">
+                <a href="/add">Add employee</a>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-lg-8 col-md-7 col-sm-6">
+                <h1>Sample report Data</h1>
+
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Min salary</th>
+                        <th>Employee Name</th>
+                        <th>Position</th>                  
+                    </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td th:text="${report.MinSalary}"></td>
+                        <td th:text="${report.LowestPaidEmployeeName}"></td>
+                        <td th:text="${report.LowestPaidEmployeePosition}"></td>
+                     </tr>
+                    </tbody>
+                </table>
+                                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Max salary</th>
+                        <th>Employee Name</th>
+                        <th>Position</th>                   
+                    </tr>
+                    </thead>
+                                      <tbody>
+                      <tr>
+                        <td th:text="${report.MaxSalary}"></td>
+                        <td th:text="${report.HighestPaidEmployeeName}"></td>
+                        <td th:text="${report.HighestPaidEmployeePosition}"></td>
+                     </tr>
+                    </tbody>
+                </table>
+                              <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Avg. Salary</th>
+                        <th>Avg. Salary per year</th> 
+                        <th>Total Income per year</th>                  
+                    </tr>
+                    </thead>
+                                      <tbody>
+                      <tr>
+                        <td th:text="${report.AvgSalary}"></td>
+                        <td th:text="${report.AvgSalaryPerYear}"></td>
+                        <td th:text="${report.TotalIncomePerYear}"></td>
+                     </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+   </div>
+
+<script src="/jquery.js" type="application/javascript"></script>
+</body>
+</html>

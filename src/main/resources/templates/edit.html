@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Employee Management</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="/bootstrap.min.css" media="screen"/>
+</head>
+
+<body>
+
+<div id="employeeedit-form">    
+
+<form id="employeeedit" method="post" action="/employee">
+<fieldset>    
+<input type="hidden" name="id" th:value=${employee.Id}>
+<label for="firstName">First Name</label>
+<input type="text" name="firstName" th:value=${employee.FirstName}>
+<br>
+<label for="lastName">First Name</label>
+<input type="text" name="lastName" th:value=${employee.LastName}>
+<br>
+<label for="birthDate">Birth Date</label>
+<input type="text" name="birthDate" th:value=${employee.Birthdate}>
+<br>
+<div th:each=" address : ${employee.AddressList}">
+<label th:value="'Address ' + ${address.Id}"></label>
+<br>
+<label for="streetName">Street</label>
+<input type="text" name="streetName" th:value="${address.StreetName}">
+<br>
+<label for="houseNumber">House Number</label>
+<input type="text" name="houseNumber" th:value="${address.HouseNumber}">
+<br>
+<label for="homeNumber">Home Number</label>
+<input type="text" name="homeNumber" th:value="${address.HomeNumber}">
+<br>
+<label for="postalCode">Postal code</label>
+<input type="text" name="postalCode" th:value="${address.PostalCode}">
+<br>
+<label for="city">City</label>
+<input type="text" name="city" th:value="${address.CityName}">
+<br>
+</div>
+<label for="phone">Phone</label>
+<input type="text" name="phone" th:value="${employee.ContactData.phoneNumber}">
+<br>
+<label for="email">E-mail</label>
+<input type="email" name="email" th:value="${employee.ContactData.Email}">
+<br>
+<label for="position">Position</label>
+<input type="text" name="position" th:value="${employee.position.PositionName}">
+<br>
+<label for="salary">Salary</label>
+<input type="number" name="salary" th:value=${employee.Salary}>
+<br>
+<input type="submit" name="submit" id="submit" value="Save" />
+
+</fieldset>
+</form>
+
+</div><!-- /end #contact-form -->
+
+</body>
+</html>
