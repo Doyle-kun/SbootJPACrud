@@ -56,7 +56,6 @@ public class EmployeeManagementApplication implements CommandLineRunner {
         address.setHomeNumber("2");
         address.setPostalCode("43-250");
         address.setCityName("Wroclaw");
-        // addressRepository.save(address);
         return address;
     }
 

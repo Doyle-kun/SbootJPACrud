@@ -1,6 +1,7 @@
 package com.sboot.crud.service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -110,11 +111,14 @@ public class EmployeeService {
     }
 
     public Report createReport() {
-        List<Employee> employeeList = Lists.newArrayList(employeeRepository.findAll());
+
+        final Integer YEAR_IN_MONTHS = 12;
+        List<Employee> employeeList = createEmployeeList(getAllEmployeesIterable());
         final Comparator<Employee> comp = (p1, p2) -> Double.compare(p1.getSalary(), p2.getSalary());
 
         Employee lowestSalaryEmployee = Collections.min(employeeList, comp);
         Employee highestSalaryEmployee = Collections.max(employeeList, comp);
+
         Report report = new Report();
         report.setAvgSalary(employeeList.stream().mapToDouble(employee -> employee.getSalary()).average().getAsDouble());
         report.setMaxSalary(highestSalaryEmployee.getSalary());
@@ -124,10 +128,19 @@ public class EmployeeService {
         report.setMaxSalary(lowestSalaryEmployee.getSalary());
         report.setHighestPaidEmployeeName(highestSalaryEmployee.getFirstName() + ' ' + highestSalaryEmployee.getLastName());
         report.setHighestPaidEmployeePosition(highestSalaryEmployee.getPosition().getPositionName());
-        report.setAvgSalaryPerYear(report.getAvgSalary() * 12);
-        report.setTotalIncomePerYear(employeeList.stream().mapToDouble(salary -> salary.getSalary()).sum());
+        report.setAvgSalaryPerYear(report.getAvgSalary() * YEAR_IN_MONTHS);
+        report.setTotalIncomePerYear(YEAR_IN_MONTHS * (employeeList.stream().mapToDouble(salary -> salary.getSalary()).sum()));
 
         return report;
+    }
+
+    private List<Employee> createEmployeeList(Iterable<Employee> employeeIterable) {
+        List<Employee> employeeList = new ArrayList<>();
+        for (Employee employee : employeeIterable) {
+            employeeList.add(employee);
+        }
+
+        return employeeList;
     }
 
 }
