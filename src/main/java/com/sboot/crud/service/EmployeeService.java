@@ -1,7 +1,6 @@
 package com.sboot.crud.service;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -111,7 +110,7 @@ public class EmployeeService {
     }
 
     public Report createReport() {
-        ArrayList<Employee> employeeList = Lists.newArrayList(employeeRepository.findAll());
+        List<Employee> employeeList = Lists.newArrayList(employeeRepository.findAll());
         final Comparator<Employee> comp = (p1, p2) -> Double.compare(p1.getSalary(), p2.getSalary());
 
         Employee lowestSalaryEmployee = Collections.min(employeeList, comp);

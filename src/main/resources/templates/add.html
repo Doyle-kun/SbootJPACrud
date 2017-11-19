@@ -1,16 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="utf-8">
-<title>HTML5 Form</title>
-<link rel="stylesheet" href="css/style.css">
+    <title>Add Employee</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="/bootstrap.min.css" media="screen"/>
+    <style>
+        .navigation-order{
+            margin-bottom: 30px;
+        }
+    </style>
 </head>
 
 <body>
+<div class="container">
+        <div class="row">
 
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-lg-8 col-md-7 col-sm-6">
+                <h1>Add Employee</h1>
 <div id="employee-form">    
 
-<form id="employee" method="post" action="/employee">
+<form id="employee" th:object=${employeeParams} method="post" action="/employee">
 <fieldset>    
 
 <label for="firstName">First Name</label>
@@ -51,11 +64,13 @@
 <label for="salary">Salary</label>
 <input type="number" name="salary">
 <br>
-<input type="submit" name="submit" id="submit" value="Save" />
+<button type="submit" name="submit" id ="submit" class="btn btn-danger delete-order">Save</button>
 
 </fieldset>
 </form>
-
+</div>
+</div>
+</div>
 </div><!-- /end #contact-form -->
 
 </body>

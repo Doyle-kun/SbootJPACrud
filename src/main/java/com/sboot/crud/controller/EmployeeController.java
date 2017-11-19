@@ -30,22 +30,22 @@ public class EmployeeController {
     }
 
     @RequestMapping(path = "/employee/add", method = RequestMethod.GET)
-    String add() {
+    String addEmployee() {
         return "add";
     }
 
     /*
-     * Honestly I know that i looks terrible, usually I pack parameters into object, but this week I have no idea and time to learn how to do it on
+     * Honestly I know that it looks terrible, usually I pack parameters into object, but this week I have no idea and time to learn how to do it on
      * frontend
      */
     @RequestMapping(value = "/employee", method = RequestMethod.POST)
-    @ResponseBody
     public String createEmployee(@RequestParam(value = "id", defaultValue = "") Long id, @RequestParam(value = "firstName") String firstName,
             @RequestParam(value = "lastName") String lastName,
             @RequestParam(value = "birthDate") String birthDate, @RequestParam(value = "streetName") String streetName,
             @RequestParam(value = "houseNumber") String houseNumber, @RequestParam(value = "houseNumber") String homeNumber,
             @RequestParam(value = "postalCode") String postalCode, @RequestParam(value = "city") String city, @RequestParam(value = "phone") String phone,
-            @RequestParam(value = "email") String email, @RequestParam(value = "position") String position, @RequestParam(value = "salary") Double salary) {
+            @RequestParam(value = "email") String email, @RequestParam(value = "position") String position, @RequestParam(value = "salary") Double salary,
+            Model model) {
         if (id == null) {
             employeeService.createEmployeeData(firstName, lastName, birthDate, streetName, houseNumber, homeNumber, postalCode, city, phone, email, position,
                     salary);
@@ -54,14 +54,14 @@ public class EmployeeController {
                     position,
                     salary);
         }
-        return "index";
+        return employeeList(model);
     }
 
     @RequestMapping(value = "/employee/delete", method = RequestMethod.POST) // should be DELETE, but I couldn't handle it from frontend
     @ResponseBody
-    public String deleteEmployee(@RequestParam Long Id) {
+    public String deleteEmployee(@RequestParam Long Id, Model model) {
         employeeService.deleteEmployee(Id);
-        return "index";
+        return employeeList(model);
     }
 
     @RequestMapping(value = "/report/print", method = RequestMethod.GET)
@@ -69,4 +69,5 @@ public class EmployeeController {
         model.addAttribute("report", employeeService.createReport());
         return "report";
     }
+
 }

@@ -1,14 +1,26 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Employee Management</title>
+    <title>Add Employee</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
     <link rel="stylesheet" href="/bootstrap.min.css" media="screen"/>
+    <style>
+        .navigation-order{
+            margin-bottom: 30px;
+        }
+    </style>
 </head>
 
 <body>
+<div class="container">
+        <div class="row">
 
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-lg-8 col-md-7 col-sm-6">
+                <h1>Edit Employee</h1>
 <div id="employeeedit-form">    
 
 <form id="employeeedit" method="post" action="/employee">
@@ -54,11 +66,13 @@
 <label for="salary">Salary</label>
 <input type="number" name="salary" th:value=${employee.Salary}>
 <br>
-<input type="submit" name="submit" id="submit" value="Save" />
+<button type="submit" name="submit" id ="submit" class="btn btn-danger delete-order">Save</button>
 
 </fieldset>
 </form>
-
+</div>
+</div>
+</div>
 </div><!-- /end #contact-form -->
 
 </body>
