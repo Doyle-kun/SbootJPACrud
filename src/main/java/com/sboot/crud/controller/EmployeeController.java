@@ -3,11 +3,11 @@ package com.sboot.crud.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sboot.crud.service.EmployeeService;
 
@@ -23,48 +23,36 @@ public class EmployeeController {
         return "index";
     }
 
-    @RequestMapping(path = "/employee/edit/{id}", method = RequestMethod.GET)
-    String editEmployee(Model model, @PathVariable(value = "id") String Id) {
-        model.addAttribute("employee", employeeService.getEmployeeById(Long.valueOf(Id)));
-        return "edit";
-    }
-
-    @RequestMapping(path = "/employee/add", method = RequestMethod.GET)
-    String addEmployee() {
-        return "add";
-    }
-
-    /*
-     * Honestly I know that it looks terrible, usually I pack parameters into object, but this week I have no idea and time to learn how to do it on
-     * frontend
-     */
-    @RequestMapping(value = "/employee", method = RequestMethod.POST)
-    public String createEmployee(@RequestParam(value = "id", defaultValue = "") Long id, @RequestParam(value = "firstName") String firstName,
-            @RequestParam(value = "lastName") String lastName,
-            @RequestParam(value = "birthDate") String birthDate, @RequestParam(value = "streetName") String streetName,
-            @RequestParam(value = "houseNumber") String houseNumber, @RequestParam(value = "houseNumber") String homeNumber,
-            @RequestParam(value = "postalCode") String postalCode, @RequestParam(value = "city") String city, @RequestParam(value = "phone") String phone,
-            @RequestParam(value = "email") String email, @RequestParam(value = "position") String position, @RequestParam(value = "salary") Double salary,
-            Model model) {
-        if (id == null) {
-            employeeService.createEmployeeData(firstName, lastName, birthDate, streetName, houseNumber, homeNumber, postalCode, city, phone, email, position,
-                    salary);
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    public String createEmployee(@ModelAttribute(name = "employeeParams") EmployeeParameters employeeParameters, Model model) {
+        if (employeeParameters.getId() == null) {
+            employeeService.createEmployeeData(employeeParameters);
         } else {
-            employeeService.updateEmployeeData(id, firstName, lastName, birthDate, streetName, houseNumber, homeNumber, postalCode, city, phone, email,
-                    position,
-                    salary);
+            employeeService.updateEmployeeData(employeeParameters);
         }
         return employeeList(model);
     }
 
-    @RequestMapping(value = "/employee/delete", method = RequestMethod.POST) // should be DELETE, but I couldn't handle it from frontend
-    @ResponseBody
+    @RequestMapping(path = "/add", method = RequestMethod.GET)
+    String addEmployee(Model model) {
+        model.addAttribute("employeeParams", new EmployeeParameters());
+        return "add";
+    }
+
+    @RequestMapping(path = "/edit/{id}", method = RequestMethod.GET)
+    String editEmployee(Model model, @PathVariable(value = "id") String Id) {
+        model.addAttribute("employee", employeeService.getEmployeeById(Long.valueOf(Id)));
+        model.addAttribute("employeeParams", employeeService.setEmployeeParamsForEdit(Long.valueOf(Id)));
+        return "edit";
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.POST) // should be DELETE, but I couldn't handle it from frontend
     public String deleteEmployee(@RequestParam Long Id, Model model) {
         employeeService.deleteEmployee(Id);
         return employeeList(model);
     }
 
-    @RequestMapping(value = "/report/print", method = RequestMethod.GET)
+    @RequestMapping(value = "/report", method = RequestMethod.GET)
     public String createReport(Model model) {
         model.addAttribute("report", employeeService.createReport());
         return "report";

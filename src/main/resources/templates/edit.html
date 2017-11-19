@@ -23,49 +23,51 @@
                 <h1>Edit Employee</h1>
 <div id="employeeedit-form">    
 
-<form id="employeeedit" method="post" action="/employee">
+<form id="employee" th:object=${employeeParams} method="post" th:action="@{/}">
 <fieldset>    
-<input type="hidden" name="id" th:value=${employee.Id}>
+<input type="hidden" th:field="*{id}" th:value=${employeeParams.Id}>
 <label for="firstName">First Name</label>
-<input type="text" name="firstName" th:value=${employee.FirstName}>
+<input type="text" th:field="*{firstName}" th:value=${employeeParams.FirstName}>
 <br>
-<label for="lastName">First Name</label>
-<input type="text" name="lastName" th:value=${employee.LastName}>
+<label for="lastName">Last Name</label>
+<input type="text" th:field="*{lastName}" th:value=${employeeParams.LastName}>
 <br>
 <label for="birthDate">Birth Date</label>
-<input type="text" name="birthDate" th:value=${employee.Birthdate}>
+<input type="text" th:field="*{birthDate}" th:value=${employee.Birthdate}>
 <br>
 <div th:each=" address : ${employee.AddressList}">
 <label th:value="'Address ' + ${address.Id}"></label>
 <br>
 <label for="streetName">Street</label>
-<input type="text" name="streetName" th:value="${address.StreetName}">
+<input type="text" th:field="*{streetName}" th:value="${address.StreetName}">
 <br>
 <label for="houseNumber">House Number</label>
-<input type="text" name="houseNumber" th:value="${address.HouseNumber}">
+<input type="text" th:field="*{houseNumber}" th:value="${address.HouseNumber}">
 <br>
 <label for="homeNumber">Home Number</label>
-<input type="text" name="homeNumber" th:value="${address.HomeNumber}">
+<input type="text" th:field="*{homeNumber}" th:value="${address.HomeNumber}">
 <br>
 <label for="postalCode">Postal code</label>
-<input type="text" name="postalCode" th:value="${address.PostalCode}">
+<input type="text" th:field="*{postalCode}" th:value="${address.PostalCode}">
 <br>
 <label for="city">City</label>
-<input type="text" name="city" th:value="${address.CityName}">
+<input type="text" th:field="*{city}" th:value="${address.CityName}">
 <br>
 </div>
+<br>
 <label for="phone">Phone</label>
-<input type="text" name="phone" th:value="${employee.ContactData.phoneNumber}">
+<input type="text" th:field="*{phone}" th:value="${employee.ContactData.phoneNumber}">
 <br>
 <label for="email">E-mail</label>
-<input type="email" name="email" th:value="${employee.ContactData.Email}">
+<input type="email" th:field="*{email}" th:value="${employee.ContactData.Email}">
 <br>
 <label for="position">Position</label>
-<input type="text" name="position" th:value="${employee.position.PositionName}">
+<input type="text" th:field="*{position}" th:value="${employee.position.PositionName}">
 <br>
 <label for="salary">Salary</label>
-<input type="number" name="salary" th:value=${employee.Salary}>
+<input type="number" th:field="*{salary}" th:value=${employee.Salary}>
 <br>
+
 <button type="submit" name="submit" id ="submit" class="btn btn-danger delete-order">Save</button>
 
 </fieldset>

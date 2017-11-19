@@ -12,6 +12,7 @@ import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sboot.crud.controller.EmployeeParameters;
 import com.sboot.crud.model.Address;
 import com.sboot.crud.model.Contact;
 import com.sboot.crud.model.Employee;
@@ -46,67 +47,85 @@ public class EmployeeService {
 
     }
 
-    public void createEmployeeData(String firstName, String lastName,
-            String birthDate, String streetName,
-            String houseNumber, String homeNumber,
-            String postalCode, String city, String phone,
-            String email, String position, Double salary) {
+    public EmployeeParameters setEmployeeParamsForEdit(Long id) {
+        EmployeeParameters employeeParameters = new EmployeeParameters();
+        Employee employee = employeeRepository.findOne(id);
+        employeeParameters.setId(employee.getId());
+        employeeParameters.setFirstName(employee.getFirstName());
+        employeeParameters.setLastName(employee.getLastName());
+        employeeParameters.setBirthDate(employee.getBirthdate().toString());
+        /* Multi-address support is currently disabled - some frontend issuess with form to add multiple adresses, but backend fully supports it */
+        for (Address address : employee.getAddressList()) {
+            employeeParameters.setStreetName(address.getStreetName());
+            employeeParameters.setHouseNumber(address.getHouseNumber());
+            employeeParameters.setHomeNumber(address.getHomeNumber());
+            employeeParameters.setPostalCode(address.getPostalCode());
+            employeeParameters.setCity(address.getCityName());
+        }
+        employeeParameters.setPhone(employee.getContactData().getPhoneNumber());
+        employeeParameters.setEmail(employee.getContactData().getEmail());
+        employeeParameters.setPosition(employee.getPosition().getPositionName());
+        employeeParameters.setSalary(employee.getSalary());
+
+        return employeeParameters;
+    }
+
+    public void createEmployeeData(EmployeeParameters employeeParameters) {
         Employee employee = new Employee();
-        employee.setFirstName(firstName);
-        employee.setLastName(lastName);
-        employee.setBirthdate(Date.valueOf(birthDate));
-        employee.addAddress(createAddressData(streetName, houseNumber, homeNumber, postalCode, city));
-        employee.setContactData(creatContactData(phone, email));
-        employee.setPosition(createPositionData(position));
-        employee.setSalary(salary);
+        employee.setFirstName(employeeParameters.getFirstName());
+        employee.setLastName(employeeParameters.getLastName());
+        employee.setBirthdate(Date.valueOf(employeeParameters.getBirthDate()));
+        employee.addAddress(createAddressData(employeeParameters));
+        employee.setContactData(creatContactData(employeeParameters));
+        employee.setPosition(createPositionData(employeeParameters));
+        employee.setSalary(employeeParameters.getSalary());
         employeeRepository.save(employee);
 
     }
 
-    private Address createAddressData(String streetName, String houseNumber, String homeNumber, String postalCode, String city) {
+    private Address createAddressData(EmployeeParameters employeeParameters) {
         Address address = new Address();
-        address.setStreetName(streetName);
-        address.setHouseNumber(houseNumber);
-        address.setHomeNumber(homeNumber);
-        address.setPostalCode(postalCode);
-        address.setCityName(city);
+        address.setStreetName(employeeParameters.getStreetName());
+        address.setHouseNumber(employeeParameters.getHouseNumber());
+        address.setHomeNumber(employeeParameters.getHomeNumber());
+        address.setPostalCode(employeeParameters.getPostalCode());
+        address.setCityName(employeeParameters.getCity());
         return address;
     }
 
-    private Contact creatContactData(String phone, String email) {
+    private Contact creatContactData(EmployeeParameters employeeParameters) {
         Contact contactData = new Contact();
-        contactData.setEmail(email);
-        contactData.setPhoneNumber(phone);
+        contactData.setEmail(employeeParameters.getEmail());
+        contactData.setPhoneNumber(employeeParameters.getPhone());
         return contactData;
     }
 
-    private Position createPositionData(String position) {
+    private Position createPositionData(EmployeeParameters employeeParameters) {
         Position positionObject = new Position();
-        positionObject.setPositionName(position);
+        positionObject.setPositionName(employeeParameters.getPosition());
         return positionObject;
     }
 
-    public void updateEmployeeData(Long id, String firstName, String lastName, String birthDate, String streetName, String houseNumber, String homeNumber,
-            String postalCode, String city, String phone, String email, String position, Double salary) {
-        Employee employee = getEmployeeById(id);
-        employee.setFirstName(firstName);
-        employee.setLastName(lastName);
-        employee.setBirthdate(Date.valueOf(birthDate));
-        employee.addAddress(updateAddressData(id, streetName, houseNumber, homeNumber, postalCode, city));
-        employee.setContactData(creatContactData(phone, email));
-        employee.setPosition(createPositionData(position));
-        employee.setSalary(salary);
+    public void updateEmployeeData(EmployeeParameters employeeParameters) {
+        Employee employee = getEmployeeById(employeeParameters.getId());
+        employee.setFirstName(employeeParameters.getFirstName());
+        employee.setLastName(employeeParameters.getLastName());
+        employee.setBirthdate(Date.valueOf(employeeParameters.getBirthDate()));
+        employee.addAddress(updateAddressData(employeeParameters));
+        employee.setContactData(creatContactData(employeeParameters));
+        employee.setPosition(createPositionData(employeeParameters));
+        employee.setSalary(employeeParameters.getSalary());
 
         employeeRepository.save(employee);
     }
 
-    private Address updateAddressData(Long id, String streetName, String houseNumber, String homeNumber, String postalCode, String city) {
-        Address address = addressRepository.findOne(id);
-        address.setStreetName(streetName);
-        address.setHouseNumber(houseNumber);
-        address.setHomeNumber(homeNumber);
-        address.setPostalCode(postalCode);
-        address.setCityName(city);
+    private Address updateAddressData(EmployeeParameters employeeParameters) {
+        Address address = addressRepository.findOne(employeeParameters.getId());
+        address.setStreetName(employeeParameters.getStreetName());
+        address.setHouseNumber(employeeParameters.getHouseNumber());
+        address.setHomeNumber(employeeParameters.getHomeNumber());
+        address.setPostalCode(employeeParameters.getPostalCode());
+        address.setCityName(employeeParameters.getCity());
         return address;
     }
 
@@ -121,11 +140,10 @@ public class EmployeeService {
 
         Report report = new Report();
         report.setAvgSalary(employeeList.stream().mapToDouble(employee -> employee.getSalary()).average().getAsDouble());
-        report.setMaxSalary(highestSalaryEmployee.getSalary());
         report.setMinSalary(lowestSalaryEmployee.getSalary());
         report.setLowestPaidEmployeeName(lowestSalaryEmployee.getFirstName() + ' ' + lowestSalaryEmployee.getLastName());
         report.setLowestPaidEmployeePosition(lowestSalaryEmployee.getPosition().getPositionName());
-        report.setMaxSalary(lowestSalaryEmployee.getSalary());
+        report.setMaxSalary(highestSalaryEmployee.getSalary());
         report.setHighestPaidEmployeeName(highestSalaryEmployee.getFirstName() + ' ' + highestSalaryEmployee.getLastName());
         report.setHighestPaidEmployeePosition(highestSalaryEmployee.getPosition().getPositionName());
         report.setAvgSalaryPerYear(report.getAvgSalary() * YEAR_IN_MONTHS);
@@ -141,6 +159,10 @@ public class EmployeeService {
         }
 
         return employeeList;
+    }
+
+    private void exportRawListToExcel(Iterable<Employee> employeeIterable) {
+
     }
 
 }
