@@ -66,5 +66,121 @@
    </div>
 
 <script src="/jquery.js" type="application/javascript"></script>
+<div class="container">
+<h2>Charts</h2>
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+<div id="container2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script th:inline="javascript">
+    $(function(){
+    Highcharts.chart('container', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Monthly earnings of employees'
+        },
+        xAxis: {
+            categories: [[${report.IndividualSalaryMap.keySet()}]],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Salary per month [in K]'
+            },
+            plotLines: [{
+            color: 'red',
+            text: 'Avg. salary',
+            value: [[${report.AvgSalary}]], 
+            width: '1',
+            zIndex: 2 
+        }]
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f} K</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Salary',
+            data: [[${report.IndividualSalaryMap.values()}]]
+        }]
+    },function(chart){
+        $.each(chart.series[0].data,function(i,data){
+
+     	   if(data.y <= [[${report.MinSalary}]])
+     	       data.graphic.attr({
+     	       fill:'red'
+     	   });
+     	   if(data.y >= [[${report.MaxSalary}]])
+     	       data.graphic.attr({
+     	       fill:'green'
+     	   });
+
+     	});
+    });
+
+  var final = [];
+    
+    for(var key in [[${report.PositionSalarySumMap}]]) {
+    	 if ([[${report.PositionSalarySumMap}]].hasOwnProperty(key)) {
+    	final.push({
+            name: key,
+            y: [[${report.PositionSalarySumMap}]][key]	
+        }); 
+    	 }
+    }
+    $('#container2').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Percent of monthly company wages per position'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} % ({point.y})',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: "Position",
+            colorByPoint: true,
+            data: final
+        }]
+    });
+    });
+</script>
+
 </body>
 </html>

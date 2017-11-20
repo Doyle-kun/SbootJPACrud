@@ -4,7 +4,9 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -132,7 +134,8 @@ public class EmployeeService {
     public Report createReport() {
 
         final Integer YEAR_IN_MONTHS = 12;
-        List<Employee> employeeList = createEmployeeList(getAllEmployeesIterable());
+        Iterable<Employee> employeeIterable = getAllEmployeesIterable();
+        List<Employee> employeeList = createEmployeeList(employeeIterable);
         final Comparator<Employee> comp = (p1, p2) -> Double.compare(p1.getSalary(), p2.getSalary());
 
         Employee lowestSalaryEmployee = Collections.min(employeeList, comp);
@@ -148,6 +151,8 @@ public class EmployeeService {
         report.setHighestPaidEmployeePosition(highestSalaryEmployee.getPosition().getPositionName());
         report.setAvgSalaryPerYear(report.getAvgSalary() * YEAR_IN_MONTHS);
         report.setTotalIncomePerYear(YEAR_IN_MONTHS * (employeeList.stream().mapToDouble(salary -> salary.getSalary()).sum()));
+        report.setIndividualSalaryMap(createIndividualSalaryMap(employeeIterable));
+        report.setPositionSalarySumMap(createPositionSalarySumMap(employeeIterable));
 
         return report;
     }
@@ -161,6 +166,23 @@ public class EmployeeService {
         return employeeList;
     }
 
+    private Map<String, Double> createIndividualSalaryMap(Iterable<Employee> employeeIterable) {
+        Map<String, Double> salaryMap = new HashMap<>();
+        for (Employee employee : employeeIterable) {
+            salaryMap.put(employee.getFirstName() + " " + employee.getLastName(), employee.getSalary());
+
+        }
+        return salaryMap;
+    }
+
+    private Map<String, Double> createPositionSalarySumMap(Iterable<Employee> employeeIterable) {
+        Map<String, Double> expensePerPositionMap = new HashMap<>();
+        for (Employee employee : employeeIterable) {
+            expensePerPositionMap.computeIfPresent(employee.getPosition().getPositionName(), (k, v) -> v + employee.getSalary());
+            expensePerPositionMap.computeIfAbsent(employee.getPosition().getPositionName(), (v) -> employee.getSalary());
+        }
+        return expensePerPositionMap;
+    }
     /* TODO - export employee data to excel */
     // private void exportRawListToExcel(Iterable<Employee> employeeIterable) {
     //

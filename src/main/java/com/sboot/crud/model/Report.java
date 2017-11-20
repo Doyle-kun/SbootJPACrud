@@ -1,5 +1,7 @@
 package com.sboot.crud.model;
 
+import java.util.Map;
+
 public class Report {
 
     private Double minSalary;
@@ -19,6 +21,10 @@ public class Report {
     private Double avgSalaryPerYear;
 
     private Double totalIncomePerYear;
+
+    private Map<String, Double> individualSalaryMap;
+
+    private Map<String, Double> positionSalarySumMap;
 
     public Double getMinSalary() {
         return minSalary;
@@ -90,6 +96,22 @@ public class Report {
 
     public void setTotalIncomePerYear(Double totalIncomePerYear) {
         this.totalIncomePerYear = totalIncomePerYear;
+    }
+
+    public Map<String, Double> getIndividualSalaryMap() {
+        return individualSalaryMap;
+    }
+
+    public void setIndividualSalaryMap(Map<String, Double> individualSalaryMap) {
+        this.individualSalaryMap = individualSalaryMap;
+    }
+
+    public Map<String, Double> getPositionSalarySumMap() {
+        return positionSalarySumMap;
+    }
+
+    public void setPositionSalarySumMap(Map<String, Double> positionSalarySumMap) {
+        this.positionSalarySumMap = positionSalarySumMap;
     }
 
 }
